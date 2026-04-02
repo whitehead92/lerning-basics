@@ -1,8 +1,0 @@
-services:
-  nginx:
-    build: .
-    ports:
-      - "8080:80"
-    volumes:
-      - ./html2:/usr/share/nginx/html
-    restart: unless-stopped
