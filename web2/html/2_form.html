@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head><meta charset="UTF-8"><title>Вход</title></head>
+<body>
+    <h2>Авторизация (JSON)</h2>
+    
+    <form id="f">
+        Логин: <input type="text" id="login" required><br><br>
+        Пароль: <input type="password" id="pass" required><br><br>
+        <button type="submit">Отправить</button>
+    </form>
+    
+    <p><a href="/index.html">На главную</a></p>
+
+    <script>
+        document.getElementById('f').onsubmit = async (e) => {
+            e.preventDefault();
+			
+            const res = await fetch('/auth-json', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    login: document.getElementById('login').value,
+                    password: document.getElementById('pass').value
+                })
+            });
+			
+			const html = await res.text();
+		document.open();
+		document.write(html);
+		document.close();
+		
+        };
+		
+    </script>
+</body>
+</html>
