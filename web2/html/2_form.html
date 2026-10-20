@@ -5,32 +5,42 @@
     <h2>Авторизация (JSON)</h2>
     
     <form id="f">
-        Логин: <input type="text" id="login" required><br><br>
+        Логин: <input type="text" id="log" required><br><br>
         Пароль: <input type="password" id="pass" required><br><br>
         <button type="submit">Отправить</button>
     </form>
+	
+	<div id="result" style="margin-top:20px; padding:15px; background:#e8f5e9; display:none;"></div>
     
     <p><a href="/index.html">На главную</a></p>
 
     <script>
-        document.getElementById('f').onsubmit = async (e) => {
-            e.preventDefault();
-			
-            const res = await fetch('/auth-json', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    login: document.getElementById('login').value,
-                    password: document.getElementById('pass').value
-                })
-            });
-			
-			const html = await res.text();
-		document.open();
-		document.write(html);
-		document.close();
-		
-        };
+        document.getElementById('f').addEventListener('submit', async function(e) {
+			e.preventDefault();
+			const login = document.getElementById('log').value;
+			const password = document.getElementById('pass').value;
+			const dat = JSON.stringify({login: login, password: password });
+			try{
+				const res = await fetch('/auth-json', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: dat
+				});
+				if (!res.ok) throw new Error(`HTTP ошибка: ${res.status}`);
+				const data = await res.json();
+				const box = document.getElementById('result');
+				box.style.display = 'block';
+				box.innerHTML = `
+					<p><b>Логин:</b> ${data.login}</p>
+					<p><b>Пароль:</b> ${data.password}</p>
+				`;
+			} catch (err) {
+				console.error(err);
+				alert('Ошибка')
+			}			
+        });
 		
     </script>
 </body>

@@ -13,7 +13,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             p = parse_qs(URL.query)
             login = p.get("login", [""])[0]
             password = p.get("password", [""])[0]
-            
+
             self._result(login, password)
             return
             
@@ -36,7 +36,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             data = json.loads(body)
             login = data.get("login", "")
             password = data.get("password", "")
-            self._result(login, password)
+            resp_data = {"login": login, "password": password}
+            json_b = json.dumps(resp_data, ensure_ascii=False).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(json_b)))
+            self.end_headers()
+            self.wfile.write(json_b)
         else:
             self.send_response(404)
             self.end_headers()
