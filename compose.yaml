@@ -8,3 +8,15 @@ services:
     build: web
     ports:
       - "8080:80"
+  web3_static:
+    build:
+      context: web3
+      target: stat
+    ports:
+      - "8081:80"
+  web3_app:
+    build:
+      context: web3
+      target: app
+    ports:
+      - "8082:8082"
