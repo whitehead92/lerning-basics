@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Query, Form
-import uvicorn
 from typing import Annotated
 from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
@@ -57,6 +56,3 @@ async def authoriz(auth: Annotated[Authorization, Form()]):
 @app.post("/auth-json")
 async def auth_json(auth: Authorization) -> Authorization:
     return auth
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8082)
