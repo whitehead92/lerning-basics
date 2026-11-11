@@ -1,22 +1,41 @@
 services:
   server:
     build: web2
-    ports:
-      - "8000:8000"
-    restart: unless-stopped
+    networks:
+      - localdocker
   nginx:
     build: web
-    ports:
-      - "8080:80"
+    networks:
+      - localdocker
   web3_static:
     build:
       context: web3
       target: stat
-    ports:
-      - "8081:80"
+    networks:
+      - localdocker
   web3_app:
     build:
       context: web3
       target: app
+    networks:
+      - localdocker
+  proxy_nginx:
+    build: proxy
     ports:
-      - "8082:8082"
+      - "80:80"
+    environment:
+      web_1: "nginx:80"
+      web_2: "server:8080"
+      web_3: "web3_static:80"
+      web_4: "web3_app:8082"
+    depends_on:
+      - nginx
+      - server
+      - web3_static
+      - web3_app
+    restart: unless-stopped
+    networks:
+      - localdocker
+networks:
+  localdocker:
+    driver: bridge

@@ -1,0 +1,30 @@
+map $host$uri $hosturi {
+    "~*^web3\.learn\.edu/hand"       ${web_4};
+    "~*^web3\.learn\.edu/auth"       ${web_4};
+    "~*^web3\.learn\.edu/auth-json"  ${web_4};
+    "~*^web3\.learn\.edu/api"  ${web_4};
+    "~*^web1\.learn\.edu/"  ${web_1};
+    "~*^web2\.learn\.edu/"  ${web_2};
+    "~*^web3\.learn\.edu/"  ${web_3};
+}
+
+server {
+    listen 80;
+    server_name _;
+    resolver 127.0.0.11 valid=30s;
+
+    location / {
+        proxy_pass http://$hosturi;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 30s;
+    }
+}

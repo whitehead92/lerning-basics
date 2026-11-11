@@ -2,21 +2,8 @@ from fastapi import FastAPI, Query, Form
 from typing import Annotated
 from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
-from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
-origins = [
-    "http://localhost:8081"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 @app.get("/hand", response_class=HTMLResponse)
 async def hand_auth(login: Annotated[str, Query()], password: Annotated[str, Query()]):
@@ -28,7 +15,7 @@ async def hand_auth(login: Annotated[str, Query()], password: Annotated[str, Que
         <h3>Данные авторизации</h3>
         <p><b>Логин:</b> {login}</p>
         <p><b>Пароль:</b> {password}</p>
-        <a href="http://localhost:8081/authorization.html">Назад</a>
+        <a href="/autorization.html">Назад</a>
     </body>
     </html>
     """
@@ -48,7 +35,7 @@ async def authoriz(auth: Annotated[Authorization, Form()]):
             <h3>Данные авторизации</h3>
             <p><b>Логин:</b> {auth.login}</p>
             <p><b>Пароль:</b> {auth.password}</p>
-            <a href="http://localhost:8081/1_form.html">Назад</a>
+            <a href="/1_form.html">Назад</a>
         </body>
         </html>
         """
