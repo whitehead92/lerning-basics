@@ -1,30 +1,33 @@
-map $host$uri $hosturi {
-    "~*^web3\.learn\.edu/hand"       ${web_4};
-    "~*^web3\.learn\.edu/auth"       ${web_4};
-    "~*^web3\.learn\.edu/auth-json"  ${web_4};
-    "~*^web3\.learn\.edu/api"  ${web_4};
-    "~*^web1\.learn\.edu/"  ${web_1};
-    "~*^web2\.learn\.edu/"  ${web_2};
-    "~*^web3\.learn\.edu/"  ${web_3};
+server {
+    listen 80;
+    server_name web1.learn.edu;
+
+    location / {
+        proxy_pass http://${web_1};
+        include /etc/nginx/proxy_params.conf;
+    }
 }
 
 server {
     listen 80;
-    server_name _;
-    resolver 127.0.0.11 valid=30s;
+    server_name web2.learn.edu;
 
     location / {
-        proxy_pass http://$hosturi;
+        proxy_pass http://${web_2};
+        include /etc/nginx/proxy_params.conf;
+    }
+}
 
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
+server {
+    listen 80;
+    server_name web3.learn.edu;
 
-        proxy_connect_timeout 5s;
-        proxy_read_timeout 30s;
+    location /api/ {
+        proxy_pass http://${web_4}/;
+        include /etc/nginx/proxy_params.conf;
+    }
+    location / {
+        proxy_pass http://${web_3};
+        include /etc/nginx/proxy_params.conf;
     }
 }
