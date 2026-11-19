@@ -1,0 +1,33 @@
+server {
+    listen 80;
+    server_name web1.learn.edu;
+
+    location / {
+        proxy_pass http://${web_1};
+        include /etc/nginx/proxy_params.conf;
+    }
+}
+
+server {
+    listen 80;
+    server_name web2.learn.edu;
+
+    location / {
+        proxy_pass http://${web_2};
+        include /etc/nginx/proxy_params.conf;
+    }
+}
+
+server {
+    listen 80;
+    server_name web3.learn.edu;
+
+    location /api/ {
+        proxy_pass http://${web_4}/;
+        include /etc/nginx/proxy_params.conf;
+    }
+    location / {
+        proxy_pass http://${web_3};
+        include /etc/nginx/proxy_params.conf;
+    }
+}
